@@ -3,12 +3,16 @@ import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 
 export default function Verify() {
-  const [message, setMessage] = useState<string>("Verifying your email...");
+  const [message, setMessage] = useState("Verifying your email...");
 
   useEffect(() => {
     const verifyEmail = async () => {
       try {
-        const { data, error } = await supabase.auth.exchangeCodeForSession(window.location.href);
+        if (typeof window === "undefined") return;
+
+        const { data, error } = await supabase.auth.exchangeCodeForSession(
+          window.location.href
+        );
 
         if (error) {
           setMessage(`❌ Verification failed: ${error.message}`);
@@ -18,7 +22,7 @@ export default function Verify() {
           setMessage("⚠️ No verification session found.");
         }
       } catch (err) {
-        setMessage("Unexpected error occurred during verification.");
+        setMessage("❌ Unexpected error occurred during verification.");
       }
     };
 
@@ -26,8 +30,8 @@ export default function Verify() {
   }, []);
 
   return (
-    <div className="p-6 text-lg text-center">
-      {message}
+    <div className="flex items-center justify-center min-h-screen">
+      <p className="text-lg font-medium text-center">{message}</p>
     </div>
   );
 }

@@ -1,17 +1,17 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { DashboardLayout } from './components/dashboard/DashboardLayout';
-import { Landing } from './pages/Landing';
-import { Login } from './pages/Login';
-import { Signup } from './pages/Signup';
-import { Verify } from './pages/Verify';
-import { Dashboard } from './pages/Dashboard';
-import { Skills } from './pages/Skills';
-import { Recommendations } from './pages/Recommendations';
-import { Progress } from './pages/Progress';
-import { Payments } from './pages/Payments';
-import { Settings } from './pages/Settings';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { DashboardLayout } from "./components/dashboard/DashboardLayout";
+import { Landing } from "./pages/Landing";
+import { Login } from "./pages/Login";
+import { Signup } from "./pages/Signup";
+import Verify from "./pages/Verify"; // ✅ fixed import (default export)
+import { Dashboard } from "./pages/Dashboard";
+import { Skills } from "./pages/Skills";
+import { Recommendations } from "./pages/Recommendations";
+import { Progress } from "./pages/Progress";
+import { Payments } from "./pages/Payments";
+import { Settings } from "./pages/Settings";
 
 // Protected Route Component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
