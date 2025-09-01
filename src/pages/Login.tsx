@@ -2,13 +2,13 @@ import { useState } from "react";
 import { supabase } from "../lib/supabase";
 import { useNavigate } from "react-router-dom";
 
-export default function SignIn() {
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSignIn = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
@@ -20,16 +20,16 @@ export default function SignIn() {
     setLoading(false);
 
     if (error) {
-      alert("❌ Sign in failed: " + error.message);
+      alert("❌ Login failed: " + error.message);
     } else {
-      alert("✅ Signed in successfully!");
-      console.log("Signin response:", data);
+      alert("✅ Logged in successfully!");
+      console.log("Login response:", data);
       navigate("/dashboard"); // redirect to dashboard
     }
   };
 
   return (
-    <form onSubmit={handleSignIn} className="flex flex-col gap-4 max-w-sm mx-auto mt-10">
+    <form onSubmit={handleLogin} className="flex flex-col gap-4 max-w-sm mx-auto mt-10">
       <input
         type="email"
         placeholder="Email"
@@ -51,7 +51,7 @@ export default function SignIn() {
         disabled={loading}
         className="bg-green-500 text-white rounded p-2 disabled:opacity-50"
       >
-        {loading ? "Signing in..." : "Sign In"}
+        {loading ? "Logging in..." : "Login"}
       </button>
     </form>
   );

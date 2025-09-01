@@ -5,7 +5,7 @@ import { DashboardLayout } from './components/dashboard/DashboardLayout';
 import { Landing } from './pages/Landing';
 import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
-import Verify from './pages/verify';
+import { Verify } from './pages/Verify';
 import { Dashboard } from './pages/Dashboard';
 import { Skills } from './pages/Skills';
 import { Recommendations } from './pages/Recommendations';
@@ -55,13 +55,11 @@ function AppRoutes() {
   return (
     <Routes>
       {/* Public Routes */}
-      {/* Public Routes */}
       <Route path="/" element={<PublicRoute><Landing /></PublicRoute>} />
       <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
       <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
       <Route path="/verify" element={<PublicRoute><Verify /></PublicRoute>} />
 
-      
       {/* Protected Routes */}
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/dashboard/skills" element={<ProtectedRoute><Skills /></ProtectedRoute>} />
@@ -69,8 +67,8 @@ function AppRoutes() {
       <Route path="/dashboard/progress" element={<ProtectedRoute><Progress /></ProtectedRoute>} />
       <Route path="/dashboard/payments" element={<ProtectedRoute><Payments /></ProtectedRoute>} />
       <Route path="/dashboard/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-      
-      {/* Catch all route */}
+
+      {/* Catch-all route */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
