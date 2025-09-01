@@ -5,7 +5,7 @@ import { DashboardLayout } from "./components/dashboard/DashboardLayout";
 import { Landing } from "./pages/Landing";
 import { Login } from "./pages/Login";
 import { Signup } from "./pages/Signup";
-import Verify from "./pages/verify"; // ✅ fixed import (default export)
+import Verify from "./pages/Verify"; 
 import { Dashboard } from "./pages/Dashboard";
 import { Skills } from "./pages/Skills";
 import { Recommendations } from "./pages/Recommendations";
