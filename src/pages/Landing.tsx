@@ -11,7 +11,7 @@ type Feature = {
   description: string;
 };
 
-export function Landing() {
+const Landing = () => {
   const features: Feature[] = [
     {
       icon: GraduationCap,
@@ -175,4 +175,6 @@ export function Landing() {
       </footer>
     </div>
   );
-}
+};
+
+export default Landing;

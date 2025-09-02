@@ -1,35 +1,34 @@
+// src/pages/Login.tsx
 import { useState } from "react";
-import { supabase } from "../lib/supabase";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { signIn } = useAuth(); // use the improved context method
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    setLoading(false);
-
-    if (error) {
+    try {
+      await signIn(email, password); // automatically sets user in context
+      navigate("/dashboard"); // redirect on successful login
+    } catch (error: any) {
       alert("❌ Login failed: " + error.message);
-    } else {
-      alert("✅ Logged in successfully!");
-      console.log("Login response:", data);
-      navigate("/dashboard"); // redirect to dashboard
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleLogin} className="flex flex-col gap-4 max-w-sm mx-auto mt-10">
+    <form
+      onSubmit={handleLogin}
+      className="flex flex-col gap-4 max-w-sm mx-auto mt-10"
+    >
       <input
         type="email"
         placeholder="Email"

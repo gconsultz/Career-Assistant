@@ -1,5 +1,9 @@
+// src/pages/Signup.tsx
 import { useState } from "react";
 import { supabase } from "../lib/supabase";
+import { Link } from "react-router-dom";
+import { Button } from "../components/ui/button";
+import { Card, CardContent } from "../components/ui/card";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
@@ -14,7 +18,7 @@ export default function Signup() {
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/dashboard`, // redirect after email verification
+        emailRedirectTo: `${window.location.origin}/dashboard`,
       },
     });
 
@@ -29,30 +33,44 @@ export default function Signup() {
   };
 
   return (
-    <form onSubmit={handleSignup} className="flex flex-col gap-4 max-w-sm mx-auto mt-10">
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-        className="border rounded p-2"
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        required
-        className="border rounded p-2"
-      />
-      <button
-        type="submit"
-        disabled={loading}
-        className="bg-blue-500 text-white rounded p-2 disabled:opacity-50"
-      >
-        {loading ? "Signing up..." : "Sign Up"}
-      </button>
-    </form>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-emerald-50 px-4">
+      <Card className="w-full max-w-md shadow-lg">
+        <CardContent className="p-8">
+          <h1 className="text-2xl font-bold text-center text-gray-900 mb-6">
+            Create Your Account
+          </h1>
+
+          <form onSubmit={handleSignup} className="flex flex-col gap-4">
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+
+            <Button type="submit" disabled={loading} className="w-full">
+              {loading ? "Signing up..." : "Sign Up"}
+            </Button>
+          </form>
+
+          <p className="mt-6 text-center text-gray-600">
+            Already have an account?{" "}
+            <Link to="/login" className="text-blue-600 hover:underline">
+              Sign in
+            </Link>
+          </p>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

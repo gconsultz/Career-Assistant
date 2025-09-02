@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+// src/pages/Settings.tsx
+import { useState } from "react";
 import { Settings } from "lucide-react";
 import { DashboardLayout } from "../components/dashboard/DashboardLayout";
 import { Card, CardContent, CardHeader } from "../components/ui/Card";
@@ -11,7 +12,8 @@ export default function SettingsPage() {
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Settings saved:", { fullName, email });
+    console.log("✅ Settings saved:", { fullName, email });
+    alert("✅ Settings updated successfully!");
   };
 
   return (
@@ -20,7 +22,7 @@ export default function SettingsPage() {
         <Settings className="mr-2 text-gray-700" /> Account Settings
       </h1>
 
-      <Card className="max-w-lg">
+      <Card className="max-w-lg p-4">
         <CardHeader>
           <h2 className="text-lg font-semibold">Profile Information</h2>
         </CardHeader>

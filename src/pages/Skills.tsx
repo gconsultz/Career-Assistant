@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+// src/pages/Skills.tsx
+import { useState } from "react";
 import { BookOpen, Plus } from "lucide-react";
 import { DashboardLayout } from "../components/dashboard/DashboardLayout";
 import { Card, CardContent, CardHeader } from "../components/ui/Card";
@@ -22,7 +23,8 @@ export default function SkillsPage() {
         <BookOpen className="mr-2 text-indigo-600" /> Skills Tracking
       </h1>
 
-      <Card className="max-w-lg mb-6">
+      {/* Add Skill Card */}
+      <Card className="max-w-lg mb-6 p-4">
         <CardHeader>
           <h2 className="text-lg font-semibold">Add New Skill</h2>
         </CardHeader>
@@ -40,11 +42,12 @@ export default function SkillsPage() {
         </CardContent>
       </Card>
 
+      {/* Skills List */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {skills.map((skill, idx) => (
-          <Card key={idx}>
+          <Card key={idx} className="p-4">
             <CardHeader>
-              <h2 className="text-lg font-semibold">{skill}</h2>
+              <h2 className="text-lg font-semibold text-gray-900">{skill}</h2>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-gray-600">

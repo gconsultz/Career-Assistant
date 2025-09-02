@@ -1,9 +1,10 @@
+// src/pages/Dashboard.tsx
 import React from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { Card, CardContent, CardHeader } from "../components/ui/card";
 import { BookOpen, Target, TrendingUp, Star } from "lucide-react";
 
-export function Dashboard() {
+const Dashboard = () => {
   const { user } = useAuth();
 
   const stats = [
@@ -147,4 +148,6 @@ export function Dashboard() {
       </div>
     </div>
   );
-}
+};
+
+export default Dashboard;

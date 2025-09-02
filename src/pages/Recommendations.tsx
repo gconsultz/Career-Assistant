@@ -1,4 +1,4 @@
-import React from "react";
+// src/pages/Recommendations.tsx
 import { Target } from "lucide-react";
 import { DashboardLayout } from "../components/dashboard/DashboardLayout";
 import { Card, CardContent, CardHeader } from "../components/ui/Card";
@@ -18,7 +18,7 @@ export default function RecommendationsPage() {
 
       <div className="space-y-4">
         {recommendations.map((rec, idx) => (
-          <Card key={idx}>
+          <Card key={idx} className="p-4">
             <CardHeader>
               <h2 className="text-lg font-semibold text-gray-900">
                 Recommendation {idx + 1}

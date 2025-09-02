@@ -4,13 +4,13 @@ import { CreditCard, Check, Star } from "lucide-react";
 import { Button } from "../components/ui/Button";
 import { Card, CardContent, CardHeader } from "../components/ui/Card";
 import { useAuth } from "../contexts/AuthContext";
-import { supabase } from "../lib/supabaseClient"; // make sure supabase client is set up
+import { supabase } from "../lib/supabase";
 
 // Load Paystack public key from environment variable (Vite format)
 const paystackPublicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || "";
 
-export function Payments() {
-  const { user } = useAuth(); // get logged-in user
+export default function Payments() {
+  const { user } = useAuth();
 
   const features = [
     "Unlimited skill tracking",
@@ -21,7 +21,6 @@ export function Payments() {
     "Interview preparation resources",
   ];
 
-  // 💡 Pricing plans
   const plans = [
     { name: "Monthly", price: 2900, tag: "Best for trying it out" },
     { name: "Quarterly", price: 7900, tag: "Save 10%" },
@@ -43,17 +42,16 @@ export function Payments() {
     const handler = window.PaystackPop.setup({
       key: paystackPublicKey,
       email: user.email,
-      amount: plan.price * 100, // Paystack expects kobo
+      amount: plan.price * 100,
       currency: "NGN",
       callback: async function (response: any) {
         try {
-          // Save subscription record in Supabase
           const { error } = await supabase.from("subscriptions").insert({
-            user_id: user.id, // assumes your auth stores user.id
+            user_id: user.id,
             plan_name: plan.name,
             amount: plan.price,
             paystack_reference: response.reference,
-            status: "active", // you can refine after backend verification
+            status: "active",
             created_at: new Date().toISOString(),
           });
 
@@ -80,7 +78,6 @@ export function Payments() {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
       <div className="text-center">
         <h1 className="text-3xl font-bold text-gray-900">
           Upgrade Your Experience
@@ -90,7 +87,6 @@ export function Payments() {
         </p>
       </div>
 
-      {/* Plans Section */}
       <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
         {plans.map((plan, index) => (
           <Card
