@@ -1,7 +1,7 @@
 // src/pages/Dashboard.tsx
 import React from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { Card, CardContent, CardHeader } from "../components/ui/card";
+import { Card, CardContent, CardHeader } from "../components/ui/Card";
 import { BookOpen, Target, TrendingUp, Star } from "lucide-react";
 
 const Dashboard = () => {

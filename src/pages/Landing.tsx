@@ -2,8 +2,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { GraduationCap, Target, TrendingUp, Users } from "lucide-react";
-import { Button } from "../components/ui/button";
-import { Card, CardContent } from "../components/ui/card";
+import { Button } from "../components/ui/Button";
+import { Card, CardContent } from "../components/ui/Card";
 
 type Feature = {
   icon: React.ComponentType<{ className?: string; size?: number }>;

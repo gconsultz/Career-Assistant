@@ -2,8 +2,8 @@
 import { useState } from "react";
 import { supabase } from "../lib/supabase";
 import { Link } from "react-router-dom";
-import { Button } from "../components/ui/button";
-import { Card, CardContent } from "../components/ui/card";
+import { Button } from "../components/ui/Button";
+import { Card, CardContent } from "../components/ui/Card";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
