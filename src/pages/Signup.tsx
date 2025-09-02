@@ -1,4 +1,3 @@
-// src/pages/Signup.tsx
 import { useState } from "react";
 import { supabase } from "../lib/supabase";
 import { Link } from "react-router-dom";
@@ -9,25 +8,31 @@ export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError(null);
+    setSuccessMsg(null);
     setLoading(true);
 
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/dashboard`,
+        emailRedirectTo: `${window.location.origin}/Verify`,
       },
     });
 
     setLoading(false);
 
     if (error) {
-      alert("❌ Signup failed: " + error.message);
+      setFormError(error.message);
     } else {
-      alert("✅ Signup successful! Please check your email for verification.");
+      setSuccessMsg("✅ Signup successful! Please check your email for verification.");
+      setEmail("");
+      setPassword("");
       console.log("Signup response:", data);
     }
   };
@@ -40,14 +45,16 @@ export default function Signup() {
             Create Your Account
           </h1>
 
-          <form onSubmit={handleSignup} className="flex flex-col gap-4">
+          <form onSubmit={handleSignup} className="flex flex-col gap-4" noValidate>
             <input
               type="email"
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              autoComplete="email"
               className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              aria-label="Email"
             />
             <input
               type="password"
@@ -55,8 +62,18 @@ export default function Signup() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              minLength={6}
+              autoComplete="new-password"
               className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              aria-label="Password"
             />
+
+            {formError && (
+              <div className="text-red-600 text-sm text-center">{formError}</div>
+            )}
+            {successMsg && (
+              <div className="text-green-600 text-sm text-center">{successMsg}</div>
+            )}
 
             <Button type="submit" disabled={loading} className="w-full">
               {loading ? "Signing up..." : "Sign Up"}

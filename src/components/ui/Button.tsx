@@ -17,7 +17,7 @@ export function Button({
   
   const variants = {
     primary: 'bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500',
-    secondary: 'bg-emerald-600 hover:bg-emerald-700 text-white focus:ring-emerald-500',
+    secondary: 'bg-emerald-600 hover:bg-emerald-700 focus:ring-emerald-500',
     outline: 'border-2 border-gray-300 hover:border-gray-400 text-gray-700 hover:bg-gray-50 focus:ring-gray-500',
     ghost: 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:ring-gray-500',
   };
@@ -30,7 +30,7 @@ export function Button({
 
   return (
     <button
-      className={`${baseClasses} ${variants[variant]} ${sizes[size]} ${className}`}
+      className={`${baseClasses} ${variants[variant]} ${sizes[size]} ${className}`.trim()}
       {...props}
     >
       {children}

@@ -1,16 +1,22 @@
-// src/pages/Payments.tsx
-import React from "react";
+import React, { useState } from "react";
 import { CreditCard, Check, Star } from "lucide-react";
 import { Button } from "../components/ui/Button";
 import { Card, CardContent, CardHeader } from "../components/ui/Card";
 import { useAuth } from "../contexts/AuthContext";
 import { supabase } from "../lib/supabase";
 
-// Load Paystack public key from environment variable (Vite format)
+// TypeScript: declare PaystackPop on window
+declare global {
+  interface Window {
+    PaystackPop: any;
+  }
+}
+
 const paystackPublicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || "";
 
 export default function Payments() {
   const { user } = useAuth();
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
 
   const features = [
     "Unlimited skill tracking",
@@ -27,6 +33,21 @@ export default function Payments() {
     { name: "Yearly", price: 29900, tag: "Save 15%" },
   ];
 
+  // Call your Vercel serverless function to verify payment
+  const verifyPaymentWithBackend = async (reference: string) => {
+    try {
+      const res = await fetch("/api/verify-paystack", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reference }),
+      });
+      const data = await res.json();
+      return data.verified;
+    } catch (err) {
+      return false;
+    }
+  };
+
   const handlePayment = (plan: { name: string; price: number }) => {
     if (!paystackPublicKey) {
       alert("Paystack key is missing. Please check your environment settings.");
@@ -38,7 +59,13 @@ export default function Payments() {
       return;
     }
 
-    // @ts-ignore - Paystack script injects PaystackPop globally
+    if (!window.PaystackPop) {
+      alert("Paystack script not loaded. Please refresh the page.");
+      return;
+    }
+
+    setLoadingPlan(plan.name);
+
     const handler = window.PaystackPop.setup({
       key: paystackPublicKey,
       email: user.email,
@@ -46,6 +73,16 @@ export default function Payments() {
       currency: "NGN",
       callback: async function (response: any) {
         try {
+          // 1. Verify payment with backend
+          const verified = await verifyPaymentWithBackend(response.reference);
+
+          if (!verified) {
+            alert("Payment could not be verified. Please contact support.");
+            setLoadingPlan(null);
+            return;
+          }
+
+          // 2. Save subscription in Supabase
           const { error } = await supabase.from("subscriptions").insert({
             user_id: user.id,
             plan_name: plan.name,
@@ -57,7 +94,7 @@ export default function Payments() {
 
           if (error) {
             console.error("Supabase error:", error);
-            alert("Payment succeeded but subscription save failed.");
+            alert("Payment verified but subscription save failed.");
           } else {
             alert(
               `Payment successful! 🎉 You are now on the ${plan.name} plan.`
@@ -65,11 +102,14 @@ export default function Payments() {
           }
         } catch (err) {
           console.error("Unexpected error:", err);
-          alert("Something went wrong while saving your subscription.");
+          alert("Something went wrong while verifying your payment.");
+        } finally {
+          setLoadingPlan(null);
         }
       },
       onClose: function () {
         alert("Payment window closed.");
+        setLoadingPlan(null);
       },
     });
 
@@ -130,9 +170,38 @@ export default function Payments() {
                   className="w-full bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700"
                   size="lg"
                   onClick={() => handlePayment(plan)}
+                  disabled={loadingPlan === plan.name}
                 >
-                  <CreditCard className="mr-2" size={20} />
-                  Choose {plan.name}
+                  {loadingPlan === plan.name ? (
+                    <span>
+                      <svg
+                        className="animate-spin inline-block mr-2 h-5 w-5 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8v8z"
+                        ></path>
+                      </svg>
+                      Processing...
+                    </span>
+                  ) : (
+                    <>
+                      <CreditCard className="mr-2" size={20} />
+                      Choose {plan.name}
+                    </>
+                  )}
                 </Button>
                 <p className="text-xs text-gray-500 text-center mt-2">
                   Secure payment processing • Cancel anytime

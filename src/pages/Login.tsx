@@ -1,27 +1,62 @@
-// src/pages/Login.tsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { supabase } from "../lib/supabase"; // Make sure this import exists
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [showResend, setShowResend] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendMsg, setResendMsg] = useState("");
   const navigate = useNavigate();
-  const { signIn } = useAuth(); // use the improved context method
+  const { signIn } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setErrorMsg("");
+    setShowResend(false);
+    setResendMsg("");
 
     try {
-      await signIn(email, password); // automatically sets user in context
-      navigate("/dashboard"); // redirect on successful login
+      await signIn(email, password);
+      navigate("/dashboard");
     } catch (error: any) {
-      alert("❌ Login failed: " + error.message);
+      if (
+        error.message &&
+        error.message.toLowerCase().includes("email not confirmed")
+      ) {
+        setErrorMsg(
+          "Your email is not confirmed. Please check your inbox for the confirmation link."
+        );
+        setShowResend(true);
+      } else {
+        setErrorMsg(error.message || "Login failed. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleResend = async () => {
+    setResendLoading(true);
+    setResendMsg("");
+    // Use the same redirect as in your signup
+    const redirectTo = `${window.location.origin}/Verify`;
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email,
+      options: { emailRedirectTo: redirectTo },
+    });
+    if (error) {
+      setResendMsg("Failed to resend confirmation email. " + error.message);
+    } else {
+      setResendMsg("Confirmation email resent! Please check your inbox.");
+    }
+    setResendLoading(false);
   };
 
   return (
@@ -45,6 +80,25 @@ export default function Login() {
         required
         className="border rounded p-2"
       />
+      {errorMsg && (
+        <div className="text-red-600 text-sm text-center">{errorMsg}</div>
+      )}
+      {showResend && (
+        <div className="flex flex-col items-center gap-2">
+          <button
+            type="button"
+            onClick={handleResend}
+            disabled={resendLoading}
+            className="text-blue-600 underline text-sm"
+          >
+            {resendLoading ? "Resending..." : "Resend confirmation email"}
+          </button>
+          {resendMsg && (
+            <div className="text-green-600 text-xs text-center">{resendMsg}</div>
+          )}
+        </div>
+      )}
+      // ...existing code...
       <button
         type="submit"
         disabled={loading}
@@ -55,3 +109,4 @@ export default function Login() {
     </form>
   );
 }
+// ...existing code...

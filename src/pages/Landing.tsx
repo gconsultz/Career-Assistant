@@ -148,9 +148,9 @@ const Landing = () => {
             <Button
               variant="secondary"
               size="lg"
-              className="bg-white text-blue-600 hover:bg-gray-100 px-8"
+              className="bg-white !text-blue-900 hover:bg-gray-100 focus:ring-2 focus:ring-blue-400 px-8 font-bold shadow"
               aria-label="Get Started Today"
-            >
+        >
               Get Started Today
             </Button>
           </Link>
