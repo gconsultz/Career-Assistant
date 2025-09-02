@@ -57,17 +57,17 @@ function AppRoutes() {
     <Routes>
       {/* Public Routes */}
       <Route path="/" element={<PublicRoute><Landing /></PublicRoute>} />
-      <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-      <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
-      <Route path="/verify" element={<PublicRoute><Verify /></PublicRoute>} />
+      <Route path="/Login" element={<PublicRoute><Login /></PublicRoute>} />
+      <Route path="/Signup" element={<PublicRoute><Signup /></PublicRoute>} />
+      <Route path="/Verify" element={<PublicRoute><Verify /></PublicRoute>} />
 
       {/* Protected Routes */}
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-      <Route path="/dashboard/skills" element={<ProtectedRoute><Skills /></ProtectedRoute>} />
-      <Route path="/dashboard/recommendations" element={<ProtectedRoute><Recommendations /></ProtectedRoute>} />
-      <Route path="/dashboard/progress" element={<ProtectedRoute><Progress /></ProtectedRoute>} />
-      <Route path="/dashboard/payments" element={<ProtectedRoute><Payments /></ProtectedRoute>} />
-      <Route path="/dashboard/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+      <Route path="/dashboard/Skills" element={<ProtectedRoute><Skills /></ProtectedRoute>} />
+      <Route path="/dashboard/Recommendations" element={<ProtectedRoute><Recommendations /></ProtectedRoute>} />
+      <Route path="/dashboard/Progress" element={<ProtectedRoute><Progress /></ProtectedRoute>} />
+      <Route path="/dashboard/Payments" element={<ProtectedRoute><Payments /></ProtectedRoute>} />
+      <Route path="/dashboard/Settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 
       {/* Catch-all route */}
       <Route path="*" element={<Navigate to="/" replace />} />

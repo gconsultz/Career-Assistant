@@ -1,4 +1,3 @@
-// src/contexts/AuthContext.tsx
 import React, { createContext, useContext, useEffect, useState, useMemo } from "react";
 import { supabase } from "../lib/supabase";
 import type { AuthContextType, User } from "../types";
@@ -12,10 +11,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Fetch user profile from 'users' table
   const fetchUserProfile = async (userId: string) => {
+    setProfileLoading(true);
     try {
       const { data, error } = await supabase
         .from("users")
-        .select("id, email, full_name, role") // only fetch necessary fields
+        .select("id, email, full_name, role")
         .eq("id", userId)
         .single();
 
@@ -29,17 +29,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // Initialize auth session and listen for changes
+  // Initialize auth session and listen for changes (including after /Verify)
   useEffect(() => {
+    let ignore = false;
+
     const initAuth = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         if (session?.user) {
-          setProfileLoading(true);
-          fetchUserProfile(session.user.id); // no await, fire-and-forget
+          await fetchUserProfile(session.user.id);
+        } else {
+          setUser(null);
         }
       } catch (err) {
         console.error("Error getting initial session:", err);
+        setUser(null);
       } finally {
         setAuthLoading(false);
       }
@@ -49,34 +53,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
-        setProfileLoading(true);
-        fetchUserProfile(session.user.id); // async, non-blocking
+        fetchUserProfile(session.user.id);
       } else {
         setUser(null);
-        setAuthLoading(false);
       }
+      setAuthLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      ignore = true;
+      subscription.unsubscribe();
+    };
   }, []);
 
-  // Sign up + create profile + auto login
+  // Sign up + create profile (no auto login until email verified)
   const signUp = async (email: string, password: string, fullName: string) => {
     const { data, error } = await supabase.auth.signUp({ email, password });
     if (error) throw error;
 
-    if (data.user) {
-      const { error: profileError } = await supabase.from("users").insert({
-        id: data.user.id,
-        email: data.user.email,
-        full_name: fullName,
-        role: "student",
-      });
-      if (profileError) throw profileError;
-
-      setProfileLoading(true);
-      fetchUserProfile(data.user.id); // async
-    }
+    // Profile creation will be handled after email verification
+    // Optionally, you can use a trigger in Supabase to auto-create profile
   };
 
   // Sign in + auto set user
@@ -85,8 +81,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (error) throw error;
 
     if (data.session?.user) {
-      setProfileLoading(true);
-      fetchUserProfile(data.session.user.id); // async
+      await fetchUserProfile(data.session.user.id);
     }
   };
 
@@ -98,7 +93,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const value = useMemo(
-    () => ({ user, loading: authLoading || profileLoading, signUp, signIn, signOut, setUser }),
+    () => ({
+      user,
+      loading: authLoading || profileLoading,
+      signUp,
+      signIn,
+      signOut,
+      setUser,
+      fetchUserProfile,
+    }),
     [user, authLoading, profileLoading]
   );
 

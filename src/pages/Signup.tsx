@@ -22,7 +22,7 @@ export default function Signup() {
       password,
       options: {
         emailRedirectTo: `${window.location.origin}/Verify`,
-      },
+      }
     });
 
     setLoading(false);
