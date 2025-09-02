@@ -4,6 +4,8 @@ An end‑to‑end career planning web application that helps users assess skills
 
 **Pitch deck**: [Career Guidance Assistant – Presentation](https://gamma.app/docs/Career-Guidance-Assistant-p0xfj21qw80y6qj)
 
+**Live app**: [career-assistant-9j2k.vercel.app](https://career-assistant-9j2k.vercel.app/)
+
 ### Key Features
 - **Authentication & profiles**: Email/password auth via Supabase with protected routes and context-driven session state.
 - **Assessments & skills**: Capture user skills and interests to tailor recommendations.
